@@ -1,0 +1,39 @@
+version: "3.1"
+services:
+  web:
+    image: empenameesta
+    container_name: docker-php
+    environment:
+      - ALLOW_OVERRIDE=true
+    ports:
+      - "81:80"
+    links:
+      - db
+    volumes:
+      - ./:/var/www/html/
+
+  db:
+    image: mariadb:10.8.2
+    container_name: docker-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root1"
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "admin1"
+      MYSQL_DATABASE: "empenameesta"
+    ports:
+      - "8889:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    ports:
+      - 8890:80
+    environment:
+      MYSQL_USER: "admin"
+      MYSQL_PASSWORD: "admin1"
+      MYSQL_DATABASE: "empenameesta"
